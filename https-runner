@@ -1,0 +1,37 @@
+{
+
+let HttpsRunner = function HttpsRunner(iframe) {
+    if(!(this instanceof HttpsRunner)) {
+        return new HttpsRunner(iframe);
+    }
+
+    this.iframe = iframe;
+    
+    let frameHTML = '';
+
+    Object.defineProperty(this, 'frameHTML', {
+        get() {
+            return frameHTML;
+        },
+
+        set(v) {
+            frameHTML = v;
+            this.iframe.src = 'https://rtmsman.github.io/library/runner.html';
+        }
+    });
+
+    this.iframe.addEventListener('load', event => {
+        if(this.iframe.src === 'https://rtmsman.github.io/library/runner.html') {
+            this.iframe.contentWindow.postMessage(frameHTML, '*');
+        } else {
+            this.iframe.src = 'https://rtmsman.github.io/library/runner.html';
+        } 
+    });
+}
+
+HttpsRunner.prototype.iframe = null;
+HttpsRunner.prototype.frameHTML = null;
+
+window.HttpsRunner = HttpsRunner;
+
+};

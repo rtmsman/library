@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <script>
+            {
+                let message;
+                window.onmessage = function(event) {
+                    if(event.source === window.parent) {
+                        if(loaded) {
+                            window.onmessage = null;
+                            window.onload = null;
+                            document.documentElement.innerHTML = '';
+                            document.write(event.data);
+                        } else {
+                            message = event;
+                        }
+                    }
+                }
+
+                let loaded = false;
+                window.onload = function() {
+                    if(message) {
+                        window.onmessage = null;
+                        window.onload = null;
+                        document.documentElement.innerHTML = '';
+                        document.write(message.data);
+                    } else {
+                        loaded = true;
+                    }
+                }
+
+                if(window.location.search) {
+                    let data = decodeURIComponent(window.location.search.slice(1));
+                    try {
+                        data = atob(data);
+                    } catch {};
+
+                    window.postMessage(data, '*');
+                }
+            };
+        </script>
+    </body>
+</html>
